@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+if [ ! -d "$CATALINA_HOME/webapps/jasperserver" ]; then
+  if [ ! -e /jasperserver-war/jasperserver.zip ]; then # If you pass your own jasperserver zip
+    wget "http://downloads.sourceforge.net/project/jasperserver/JasperServer/JasperReports%20Server%20Community%20Edition%20$JASPERSERVER_VERSION/jasperreports-server-cp-$JASPERSERVER_VERSION-bin.zip" -O /jasperserver-war/jasperserver.zip
+  fi
+  unzip /jasperserver-war/jasperserver.zip -d /usr/src/
+  mv /usr/src/jasperreports-server-cp-*-bin /usr/src/jasperreports-server
+  rm -r /usr/src/jasperreports-server/samples
+fi
+
 # wait upto 30 seconds for the database to start before connecting
 #/wait-for-it.sh $DB_HOST:$DB_PORT -t 30
 

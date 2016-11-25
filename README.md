@@ -2,23 +2,24 @@
 
 The Docker Image aims to quickly get up-and-running a JasperReports Server for a development environment.
 
-[![](https://images.microbadger.com/badges/image/retriever/jasperserver.svg)](https://microbadger.com/images/retriever/jasperserver "Get your own image badge on microbadger.com")
-
 ## Start the Container
 
 ### Using Command Line
 
 To start the JasperServer container you'll need to pass in 5 environment variables and link it to either a MySQL or Postgres container.
 
-E.g. `docker run -d --name jasperserver -e DB_TYPE=mysql -e DB_HOST=db -e DB_PORT=3306 -e DB_USER=root -e DB_PASSWORD=mysql --link jasperserver_mysql:db -p 8080:8080 retriever/jasperserver`
+E.g. `docker run -d --name jasperserver -e DB_TYPE=mysql -e DB_HOST=db -e DB_PORT=3306 -e DB_USER=root -e DB_PASSWORD=mysql --link jasperserver_mysql:db -p 8080:8080 atsistemas/docker-jasperserver-master`
 
 If you prefer to pass a specific configuration file just bind volume to `/jasperserver-conf` containing a file named `default_master.properties`. An example file can be found in the repository
 
-E.g. `docker run -d --name jasperserver --link jasperserver_mysql:db -p 8080:8080 -v jasperconf:/jasperserver-conf retriever/jasperserver`
+E.g. `docker run -d --name jasperserver --link jasperserver_mysql:db -p 8080:8080 -v jasperconf:/jasperserver-conf atsistemas/docker-jasperserver-master`
 
 If you haven't got an existing MySQL or Postgres container then you can easily create one:
 `docker run -d --name jasperserver_mysql -e MYSQL_ROOT_PASSWORD=mysql mysql`
 
+By default in runtime the image download a version of Jasper (JASPERSERVER_VERSION=6.3.0), If you want to use your own Jasper Server distro, download it and pass (mount) the location in
+
+E.g. `docker run -d --name jasperserver -p 8080:8080 -v jasperwar:/jasperserver-war atsistemas/docker-jasperserver-master`
 
 ### Using Docker-compose
 
@@ -38,8 +39,8 @@ Note: To install Docker-compose see the [releases page](https://github.com/docke
 2. Login using credentials: jasperadmin/jasperadmin
 
 ## Requirements
-* It's needed download the zip with the artifact of jasperserver in local directory. Please, renamed it to `jasperserver.zip`
-* Download URL for version 6.3.0: `https://sourceforge.net/projects/jasperserver/files/JasperServer/JasperReports%20Server%20Community%20Edition%206.3.0/jasperreports-server-cp-6.3.0-bin.zip/download `
+* If you want to use your own jasper artifact It's needed download the zip with the artifact of jasperserver in local directory. Please, renamed it to `jasperserver.zip`
+* Example download URL for version 6.3.0: `https://sourceforge.net/projects/jasperserver/files/JasperServer/JasperReports%20Server%20Community%20Edition%206.3.0/jasperreports-server-cp-6.3.0-bin.zip/download `
 
 ## Image Features
 This image includes:

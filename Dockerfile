@@ -1,14 +1,7 @@
 FROM tomcat:7
 MAINTAINER Nic Grange nicolas.grange@retrievercommunications.com
 
-# Execute all in one layer so that it keeps the image as small as possible
-COPY jasperserver.zip /tmp
-
-RUN unzip /tmp/jasperserver.zip -d /usr/src/ && \
-    rm /tmp/jasperserver.zip && \
-    mv /usr/src/jasperreports-server-cp-*-bin /usr/src/jasperreports-server && \
-    rm -r /usr/src/jasperreports-server/samples
-
+ENV JASPERSERVER_VERSION=6.3.0
 
 # Used to wait for the database to start before connecting to it
 # This script is from https://github.com/vishnubob/wait-for-it
@@ -25,6 +18,7 @@ VOLUME ["/jasperserver-import"]
 
 # This volume allows to pass properties file to JasperServer
 VOLUME ["/jasperserver-conf"]
+VOLUME ["/jasperserver-war"]
 
 # By default, JasperReports Server only comes with Postgres & MariaDB/MySQL drivers
 # Copy over other JBDC drivers the deploy-jdbc-jar ant task will put it in right location
@@ -33,6 +27,5 @@ VOLUME ["/jasperserver-conf"]
 # Use the minimum recommended settings to start-up
 # as per http://community.jaspersoft.com/documentation/jasperreports-server-install-guide/v561/setting-jvm-options-application-servers
 ENV JAVA_OPTS="-Xms1024m -Xmx2048m -XX:PermSize=32m -XX:MaxPermSize=512m -Xss2m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled"
-
 # Wait for DB to start-up, start up JasperServer and bootstrap if required
 ENTRYPOINT ["/entrypoint.sh"]
