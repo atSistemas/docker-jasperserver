@@ -1,14 +1,12 @@
 FROM tomcat:7
-MAINTAINER Nic Grange nicolas.grange@retrievercommunications.com 
-
-ENV JASPERSERVER_VERSION 6.3.0
+MAINTAINER Nic Grange nicolas.grange@retrievercommunications.com
 
 # Execute all in one layer so that it keeps the image as small as possible
-RUN wget "http://downloads.sourceforge.net/project/jasperserver/JasperServer/JasperReports%20Server%20Community%20Edition%20$JASPERSERVER_VERSION/jasperreports-server-cp-$JASPERSERVER_VERSION-bin.zip" \
-         -O /tmp/jasperserver.zip  && \
-    unzip /tmp/jasperserver.zip -d /usr/src/ && \
+COPY jasperserver.zip /tmp
+
+RUN unzip /tmp/jasperserver.zip -d /usr/src/ && \
     rm /tmp/jasperserver.zip && \
-    mv /usr/src/jasperreports-server-cp-$JASPERSERVER_VERSION-bin /usr/src/jasperreports-server && \
+    mv /usr/src/jasperreports-server-cp-*-bin /usr/src/jasperreports-server && \
     rm -r /usr/src/jasperreports-server/samples
 
 
@@ -25,9 +23,12 @@ RUN chmod a+x /entrypoint.sh
 # This volume allows JasperServer export zip files to be automatically imported when bootstrapping
 VOLUME ["/jasperserver-import"]
 
+# This volume allows to pass properties file to JasperServer
+VOLUME ["/jasperserver-conf"]
+
 # By default, JasperReports Server only comes with Postgres & MariaDB/MySQL drivers
 # Copy over other JBDC drivers the deploy-jdbc-jar ant task will put it in right location
-ADD db2jcc4.jar /usr/src/jasperreports-server/buildomatic/conf_source/db/app-srv-jdbc-drivers/db2jcc4.jar
+# ADD db2jcc4.jar /usr/src/jasperreports-server/buildomatic/conf_source/db/app-srv-jdbc-drivers/db2jcc4.jar
 
 # Use the minimum recommended settings to start-up
 # as per http://community.jaspersoft.com/documentation/jasperreports-server-install-guide/v561/setting-jvm-options-application-servers
